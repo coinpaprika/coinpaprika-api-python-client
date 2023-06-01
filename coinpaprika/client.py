@@ -1,6 +1,13 @@
 import requests
 
-from coinpaprika.exceptions import CoinpaprikaAPIException, CoinpaprikaRequestException
+from coinpaprika.exceptions import (CoinpaprikaAPIBadRequestException,
+                                    CoinpaprikaAPIException,
+                                    CoinpaprikaAPIForbiddenException,
+                                    CoinpaprikaAPIInternalServerErrorException,
+                                    CoinpaprikaAPINotFoundException,
+                                    CoinpaprikaAPIPaymentRequiredException,
+                                    CoinpaprikaAPITooManyRequestsException,
+                                    CoinpaprikaRequestException)
 
 
 class Client(object):
@@ -47,6 +54,18 @@ class Client(object):
         return self._request(method, uri, **kwargs)
 
     def _handle_response(self, response):
+        if response.status_code == 400:
+            raise CoinpaprikaAPIBadRequestException(response)
+        if response.status_code == 402:
+            raise CoinpaprikaAPIPaymentRequiredException(response)
+        if response.status_code == 403:
+            raise CoinpaprikaAPIForbiddenException(response)
+        if response.status_code == 404:
+            raise CoinpaprikaAPINotFoundException(response)
+        if response.status_code == 429:
+            raise CoinpaprikaAPITooManyRequestsException(response)
+        if response.status_code == 500:
+            raise CoinpaprikaAPIInternalServerErrorException(response)
         if not str(response.status_code).startswith("2"):
             raise CoinpaprikaAPIException(response)
         try:
