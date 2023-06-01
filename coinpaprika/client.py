@@ -1,55 +1,63 @@
 import requests
 
-from coinpaprika.exceptions import CoinpaprikaAPIException
-from coinpaprika.exceptions import CoinpaprikaRequestException
+from coinpaprika.exceptions import CoinpaprikaAPIException, CoinpaprikaRequestException
+
 
 class Client(object):
-    API_URL = "https://api.coinpaprika.com/v1"
+    _API_FREE_URL = "https://api.coinpaprika.com/v1"
+    _API_PRO_URL = "https://api-pro.coinpaprika.com/v1"
+    _HEADERS: dict = {"Accept": "application/json", "User-Agent": "coinpaprika/python"}
 
-    def __init__(self, requests_params=None):
-        self.session = self._init_session()
+    def __init__(self, requests_params=None, api_key=None):
+        self.session = self._init_session(api_key=api_key)
+        self._base_url = self._get_base_url(api_key=api_key)
         self._requests_params = requests_params
-    
-    def _init_session(self):
+
+    def _init_session(self, api_key=None):
         session = requests.session()
-        session.headers.update({'Accept': 'application/json',
-                                'User-Agent': 'coinpaprika/python'})
+        session.headers.update(
+            {**self._HEADERS, "Authorization": api_key} if api_key else self._HEADERS
+        )
         return session
 
+    def _get_base_url(self, api_key=None):
+        return self._API_PRO_URL if api_key else self._API_FREE_URL
+
     def _request(self, method, uri, force_params=False, **kwargs):
+        kwargs["timeout"] = 10
 
-        kwargs['timeout'] = 10
-
-        data = kwargs.get('data', None)
+        data = kwargs.get("data", None)
         if data and isinstance(data, dict):
-            kwargs['data'] = data
+            kwargs["data"] = data
 
         # if get request assign data array to params value for requests lib
-        if data and (method == 'get' or force_params):
-            kwargs['params'] = kwargs['data']
-            del(kwargs['data'])
+        if data and (method == "get" or force_params):
+            kwargs["params"] = kwargs["data"]
+            del kwargs["data"]
 
         response = getattr(self.session, method)(uri, **kwargs)
 
         return self._handle_response(response)
 
     def _create_api_uri(self, path):
-        return "{}/{}".format(self.API_URL, path)
+        return "{}/{}".format(self._base_url, path)
 
     def _request_api(self, method, path, **kwargs):
         uri = self._create_api_uri(path)
         return self._request(method, uri, **kwargs)
 
     def _handle_response(self, response):
-        if not str(response.status_code).startswith('2'):
+        if not str(response.status_code).startswith("2"):
             raise CoinpaprikaAPIException(response)
         try:
             return response.json()
         except ValueError:
-            raise CoinpaprikaRequestException("Invalid Response: {}".format(response.text))
+            raise CoinpaprikaRequestException(
+                "Invalid Response: {}".format(response.text)
+            )
 
     def _get(self, path, **kwargs):
-        return self._request_api('get', path, **kwargs)
+        return self._request_api("get", path, **kwargs)
 
     def global_market(self):
         return self._get("global")
