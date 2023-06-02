@@ -16,10 +16,18 @@ pip install coinpaprika
 
 ## Getting started
 
+### Free plan client 
 ```python
 from coinpaprika import client as Coinpaprika
 
 client = Coinpaprika.Client()
+```
+
+### Pro plan client
+```python
+from coinpaprika import client as Coinpaprika
+
+client = Coinpaprika.Client(api_key="YOUR-API-KEY")
 ```
 
 ## Examples
