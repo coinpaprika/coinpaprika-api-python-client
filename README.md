@@ -1,7 +1,5 @@
 # Coinpaprika API Python Client
 
-TODO
-
 ## Usage
 
 This library provides convenient way to use [Coinpaprika API](https://api.coinpaprika.com/) in Python.
