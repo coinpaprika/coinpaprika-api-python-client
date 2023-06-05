@@ -4,9 +4,11 @@ TODO
 
 ## Usage
 
-This library provides convenient way to use [coinpaprika.com](https://api.coinpaprika.com/) API in Python.
+This library provides convenient way to use [Coinpaprika API](https://api.coinpaprika.com/) in Python.
 
 [Coinpaprika](https://coinpaprika.com/) delivers full market data to the world of crypto: coin prices, volumes, market caps, ATHs, return rates and more.
+
+For details and limitations please check the [documentation](https://api.coinpaprika.com/)
 
 ## Requirements
 
@@ -29,6 +31,7 @@ from coinpaprika import client as Coinpaprika
 
 client = Coinpaprika.Client(api_key="YOUR-API-KEY")
 ```
+API KEY can be generated [https://coinpaprika.com/api/](https://coinpaprika.com/api/).
 
 ## Examples
 Check out the [./examples](./examples) directory.

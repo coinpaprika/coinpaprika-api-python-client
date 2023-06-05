@@ -25,10 +25,7 @@ free_client.exchanges("btc-bitcoin")
 free_client.markets("btc-bitcoin", quotes="USD")
 
 # Get 24h OHLC candle (USD,BTC)
-free_client.candle("btc-bitcoin")
-
-# Get historical OHLCV information for a specific coin (USD,BTC)
-free_client.candles("btc-bitcoin", start="2019-01-11T00:00:00Z")
+free_client.ohlcv("btc-bitcoin")
 
 # Get today OHLC (can change every each request until actual close of the day at 23:59:59)
 free_client.today("btc-bitcoin")
@@ -75,7 +72,7 @@ free_client.price_converter(base_currency_id="btc-bitcoin", quote_currency_id="u
 pro_client = Client(api_key="YOUR-API-KEY")
 
 # Ohlcv historical
-pro_client.candles(coin_id="fct-factom")
+pro_client.ohlcv(coin_id="btc-bitcoin", start="2019-01-11T00:00:00Z")
 
 # Tickers historical
-pro_client.historical(coin_id="etho-ethoprotocol", quote="BTC")
+pro_client.historical(coin_id="eth-ethereum", quote="BTC")
