@@ -104,9 +104,14 @@ class Client(object):
     def candle(self, coin_id, **params):
         return self._get("coins/{}/ohlcv/latest".format(coin_id), data=params)
 
+    # Deprecated use ohlcv instead
     def candles(self, coin_id, **params):
         return self._get("coins/{}/ohlcv/historical".format(coin_id), data=params)
 
+    def ohlcv(self, coin_id, **params):
+        return self._get("coins/{}/ohlcv/historical".format(coin_id), data=params)
+
+    # Deprecated use ohlcv instead
     def today(self, coin_id, **params):
         return self._get("coins/{}/ohlcv/today".format(coin_id), data=params)
 
