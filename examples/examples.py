@@ -47,9 +47,6 @@ free_client.tickers()
 # Get ticker information for a specific coin (USD,BTC,ETH)
 free_client.ticker("btc-bitcoin")
 
-# Get historical ticker information for a specific coin (USD,BTC,ETH)
-free_client.historical("btc-bitcoin", start="2019-04-11T00:00:00Z")
-
 # List exchanges
 free_client.exchange_list()
 
@@ -71,8 +68,10 @@ free_client.price_converter(base_currency_id="btc-bitcoin", quote_currency_id="u
 
 pro_client = Client(api_key="YOUR-API-KEY")
 
-# Ohlcv historical
-pro_client.ohlcv(coin_id="btc-bitcoin", start="2019-01-11T00:00:00Z")
+# Get historical OHLCV information for a specific coin (USD,BTC)
+pro_client.candles("btc-bitcoin", start="2019-01-11T00:00:00Z")
 
-# Tickers historical
-pro_client.historical(coin_id="eth-ethereum", quote="BTC")
+# Get historical ticker information for a specific coin (USD,BTC,ETH)
+pro_client.historical("btc-bitcoin", start="2019-04-11T00:00:00Z")
+
+

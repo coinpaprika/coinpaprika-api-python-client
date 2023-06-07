@@ -76,11 +76,11 @@ def test_api_too_many_requests_exception():
         with requests_mock.mock() as m:
             json_obj = {"error": "<error message>"}
             m.get(
-                "https://api.coinpaprika.com/v1/coins/btc",
+                "https://api.coinpaprika.com/v1/coins/btc-bitcoin",
                 json=json_obj,
                 status_code=429,
             )
-            client.coin("btc")
+            client.coin("btc-bitcoin")
 
 
 def test_api_internal_server_error_exception():
@@ -88,11 +88,11 @@ def test_api_internal_server_error_exception():
         with requests_mock.mock() as m:
             json_obj = {"error": "<error message>"}
             m.get(
-                "https://api.coinpaprika.com/v1/coins/btc",
+                "https://api.coinpaprika.com/v1/coins/btc-bitcoin",
                 json=json_obj,
                 status_code=500,
             )
-            client.coin("btc")
+            client.coin("btc-bitcoin")
 
 
 def test_api_exception():
@@ -100,11 +100,11 @@ def test_api_exception():
         with requests_mock.mock() as m:
             json_obj = {"error": "<error message>"}
             m.get(
-                "https://api.coinpaprika.com/v1/coins/btc",
+                "https://api.coinpaprika.com/v1/coins/btc-bitcoin",
                 json=json_obj,
                 status_code=400,
             )
-            client.coin("btc")
+            client.coin("btc-bitcoin")
 
 
 def test_api_exception_invalid_json():
@@ -112,18 +112,18 @@ def test_api_exception_invalid_json():
         with requests_mock.mock() as m:
             fake_json_obj = "invalid"
             m.get(
-                "https://api.coinpaprika.com/v1/coins/btc",
+                "https://api.coinpaprika.com/v1/coins/btc-bitcoin",
                 json=fake_json_obj,
                 status_code=400,
             )
-            client.coin("btc")
+            client.coin("btc-bitcoin")
 
 
 def test_api_exception_with_no_json():
     with pytest.raises(CoinpaprikaAPIException):
         with requests_mock.mock() as m:
-            m.get("https://api.coinpaprika.com/v1/coins/btc", status_code=400)
-            client.coin("btc")
+            m.get("https://api.coinpaprika.com/v1/coins/btc-bitcoin", status_code=400)
+            client.coin("btc-bitcoin")
 
 
 def test_api_global_market():
@@ -165,36 +165,36 @@ def test_api_coins():
 
 def test_api_coin():
     expected = {
-        "id": "fct-factom",
-        "name": "Factom",
-        "symbol": "FCT",
-        "is_active": False,
+        "id": "btc-bitcoin",
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "is_active": True,
         "type": "coin",
     }
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin",
             status_code=200,
             json=expected,
         )
-        result = client.coin(coin_id="fct-factom")
+        result = client.coin(coin_id="btc-bitcoin")
 
     assert result == expected
 
 
 def test_api_twitter():
     expected = {
-        "date": "2022-10-26T11:54:17Z",
-        "user_name": "factom",
+        "date": "2022-12-12T13:36:47Z",
+        "user_name": "fanquake",
         "is_retweet": True,
     }
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/twitter",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/twitter",
             status_code=200,
             json=expected,
         )
-        result = client.twitter(coin_id="fct-factom")
+        result = client.twitter(coin_id="btc-bitcoin")
 
     assert result == expected
 
@@ -206,11 +206,11 @@ def test_api_events():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/events",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/events",
             status_code=200,
             json=expected,
         )
-        result = client.events(coin_id="fct-factom")
+        result = client.events(coin_id="btc-bitcoin")
 
     assert result == expected
 
@@ -230,11 +230,11 @@ def test_api_exchanges():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/exchanges",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/exchanges",
             status_code=200,
             json=expected,
         )
-        result = client.exchanges(coin_id="fct-factom")
+        result = client.exchanges(coin_id="btc-bitcoin")
 
     assert result == expected
 
@@ -246,11 +246,11 @@ def test_api_markets():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/markets?category=Spot",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/markets?category=Spot",
             status_code=200,
             json=expected,
         )
-        result = client.markets(coin_id="fct-factom", category="Spot")
+        result = client.markets(coin_id="btc-bitcoin", category="Spot")
 
     assert result == expected
 
@@ -270,11 +270,11 @@ def test_api_candle():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/ohlcv/latest",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/ohlcv/latest",
             status_code=200,
             json=expected,
         )
-        result = client.candle(coin_id="fct-factom")
+        result = client.candle(coin_id="btc-bitcoin")
 
     assert result == expected
 
@@ -296,11 +296,11 @@ def test_api_candles():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/ohlcv/historical",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/ohlcv/historical",
             status_code=200,
             json=expected,
         )
-        result = client.candles(coin_id="fct-factom")
+        result = client.candles(coin_id="btc-bitcoin")
 
     assert result == expected
 
@@ -320,11 +320,11 @@ def test_api_today():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/coins/fct-factom/ohlcv/today",
+            "https://api.coinpaprika.com/v1/coins/btc-bitcoin/ohlcv/today",
             status_code=200,
             json=expected,
         )
-        result = client.today(coin_id="fct-factom")
+        result = client.today(coin_id="btc-bitcoin")
 
     assert result == expected
 
@@ -413,11 +413,11 @@ def test_api_historical():
     ]
     with requests_mock.mock() as m:
         m.get(
-            "https://api.coinpaprika.com/v1/tickers/etho-ethoprotocol/historical?quote=BTC",
+            "https://api.coinpaprika.com/v1/tickers/eth-ethereum/historical?quote=BTC",
             status_code=200,
             json=expected,
         )
-        result = client.historical(coin_id="etho-ethoprotocol", quote="BTC")
+        result = client.historical(coin_id="eth-ethereum", quote="BTC")
 
     assert result == expected
 
