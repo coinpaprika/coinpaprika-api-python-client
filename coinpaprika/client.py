@@ -1,13 +1,15 @@
 import requests
 
-from coinpaprika.exceptions import (CoinpaprikaAPIBadRequestException,
-                                    CoinpaprikaAPIException,
-                                    CoinpaprikaAPIForbiddenException,
-                                    CoinpaprikaAPIInternalServerErrorException,
-                                    CoinpaprikaAPINotFoundException,
-                                    CoinpaprikaAPIPaymentRequiredException,
-                                    CoinpaprikaAPITooManyRequestsException,
-                                    CoinpaprikaRequestException)
+from coinpaprika.exceptions import (
+    CoinpaprikaAPIBadRequestException,
+    CoinpaprikaAPIException,
+    CoinpaprikaAPIForbiddenException,
+    CoinpaprikaAPIInternalServerErrorException,
+    CoinpaprikaAPINotFoundException,
+    CoinpaprikaAPIPaymentRequiredException,
+    CoinpaprikaAPITooManyRequestsException,
+    CoinpaprikaRequestException,
+)
 
 
 class Client(object):

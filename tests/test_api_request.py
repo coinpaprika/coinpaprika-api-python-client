@@ -165,9 +165,9 @@ def test_api_coins():
 
 def test_api_coin():
     expected = {
-        'id': 'btc-bitcoin',
-        'name': 'Bitcoin',
-        'symbol': 'BTC',
+        "id": "btc-bitcoin",
+        "name": "Bitcoin",
+        "symbol": "BTC",
         "is_active": True,
         "type": "coin",
     }
@@ -184,10 +184,10 @@ def test_api_coin():
 
 def test_api_twitter():
     expected = {
-        'date': '2022-12-12T13:36:47Z',
-        'user_name': 'fanquake',
-        'is_retweet': True
-     }
+        "date": "2022-12-12T13:36:47Z",
+        "user_name": "fanquake",
+        "is_retweet": True,
+    }
     with requests_mock.mock() as m:
         m.get(
             "https://api.coinpaprika.com/v1/coins/btc-bitcoin/twitter",
