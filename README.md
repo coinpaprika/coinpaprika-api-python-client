@@ -1,3 +1,5 @@
+[![Check & test & build](https://github.com/coinpaprika/coinpaprika-api-python-client/actions/workflows/main.yaml/badge.svg)](https://github.com/coinpaprika/coinpaprika-api-python-client/actions/workflows/main.yaml)
+
 # Coinpaprika API Python Client
 
 ## Usage
