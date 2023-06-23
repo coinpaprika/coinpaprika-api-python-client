@@ -45,7 +45,7 @@ pytest tests/test_api_request.py
 ```
 
 ## License
-CoinpaprikaAPI is available under the MIT license. See the LICENSE file for more info.
+See the LICENSE file for more info.
 
 ## Source
 Based on repository which is not maintained anymore: 
