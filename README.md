@@ -13,7 +13,7 @@ For details and limitations please check the [documentation](https://api.coinpap
 ## Requirements
 
 ```text
-pip install coinpaprika
+pip install coinpaprika-sdk
 ```
 
 ## Getting started
