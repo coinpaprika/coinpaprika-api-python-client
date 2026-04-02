@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='coinpaprika-sdk',
-    version='1.0.0',
+    version='1.1.0',
     author='Coinpaprika',
     author_email='it@coinpaprika.com',
     description='Official coinpaprika API Python client',

@@ -147,3 +147,34 @@ class Client(object):
 
     def price_converter(self, **params):
         return self._get("price-converter", data=params)
+
+    def coin_mappings(self, **params):
+        """Get ID mappings to other data providers (CoinGecko, CoinMarketCap, etc.)."""
+        return self._get("coins/mappings", data=params)
+
+    def platforms(self):
+        """Get list of contract platforms (blockchains that support smart contracts)."""
+        return self._get("contracts")
+
+    def contracts(self, platform_id):
+        """Get all contracts/tokens on a given platform."""
+        return self._get("contracts/{}".format(platform_id))
+
+    def ticker_by_contract(self, platform_id, contract_address):
+        """Get ticker data for a token by its contract address on a given platform."""
+        return self._get("contracts/{}/{}".format(platform_id, contract_address))
+
+    def historical_by_contract(self, platform_id, contract_address, **params):
+        """Get historical ticker data for a token by contract address."""
+        return self._get(
+            "contracts/{}/{}/historical".format(platform_id, contract_address),
+            data=params,
+        )
+
+    def key_info(self):
+        """Get API key usage information (requires API key)."""
+        return self._get("key/info")
+
+    def changelog_ids(self):
+        """Get recent changelog IDs for coins that changed recently."""
+        return self._get("changelog/ids")
