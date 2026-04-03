@@ -33,12 +33,62 @@ client = Coinpaprika.Client(api_key="YOUR-API-KEY")
 ```
 API KEY can be generated [https://coinpaprika.com/api/](https://coinpaprika.com/api/).
 
+## API Coverage
+
+### Market Data
+```python
+client.global_market()                    # Global market overview
+client.coins()                            # List all coins
+client.coin("btc-bitcoin")               # Coin details
+client.tickers()                          # All tickers
+client.ticker("btc-bitcoin")             # Ticker for specific coin
+client.historical("btc-bitcoin", start="2024-01-01")  # Historical tickers (Pro)
+```
+
+### OHLCV
+```python
+client.candle("btc-bitcoin")              # Latest 24h OHLCV
+client.ohlcv("btc-bitcoin", start="2024-01-01")  # Historical OHLCV
+client.today("btc-bitcoin")              # Today's OHLCV (updates until close)
+```
+
+### Exchanges
+```python
+client.exchange_list()                    # List exchanges
+client.exchange("binance")               # Exchange details
+client.exchange_markets("binance")       # Markets on exchange
+```
+
+### Contracts
+```python
+client.platforms()                        # List contract platforms
+client.contracts("eth-ethereum")          # Contracts on Ethereum
+client.ticker_by_contract("eth-ethereum", "0xdac1...")  # Ticker by contract
+client.historical_by_contract("eth-ethereum", "0xdac1...", start="2024-01-01")  # Historical by contract
+```
+
+### Other
+```python
+client.search(q="bitcoin")               # Search coins, exchanges, people, tags
+client.price_converter(base_currency_id="btc-bitcoin", quote_currency_id="usd-us-dollars", amount=1)
+client.coin_mappings()                    # ID mappings to CoinGecko, CMC, etc. (Pro)
+client.people("vitalik-buterin")         # Person details
+client.tags()                             # List tags
+client.tag("blockchain-service")         # Tag details
+client.twitter("btc-bitcoin")            # Twitter timeline
+client.events("btc-bitcoin")             # Coin events
+client.exchanges("btc-bitcoin")          # Exchanges for coin
+client.markets("btc-bitcoin")            # Markets for coin
+client.key_info()                         # API key usage info (requires key)
+client.changelog_ids()                    # Recent changelog IDs (Pro)
+```
+
 ## Examples
 Check out the [./examples](./examples) directory.
 
 ## Tests
 
-```test
+```bash
 pip install -r test_requirements.txt
 
 pytest tests/test_api_request.py

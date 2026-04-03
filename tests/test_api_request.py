@@ -474,3 +474,170 @@ def test_api_exchange_markets():
         result = client.exchange_markets(exchange_id="coinbase", quotes="USD")
 
     assert result == expected
+
+
+def test_api_search():
+    expected = {"currencies": [{"id": "btc-bitcoin", "name": "Bitcoin"}]}
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/search?q=btc&c=currencies&limit=5",
+            status_code=200,
+            json=expected,
+        )
+        result = client.search(q="btc", c="currencies", limit=5)
+
+    assert result == expected
+
+
+def test_api_price_converter():
+    expected = {
+        "base_currency_id": "btc-bitcoin",
+        "quote_currency_id": "usd-us-dollars",
+        "amount": 1337,
+        "price": 37508969,
+    }
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/price-converter?base_currency_id=btc-bitcoin&quote_currency_id=usd-us-dollars&amount=1337",
+            status_code=200,
+            json=expected,
+        )
+        result = client.price_converter(
+            base_currency_id="btc-bitcoin",
+            quote_currency_id="usd-us-dollars",
+            amount=1337,
+        )
+
+    assert result == expected
+
+
+def test_api_ticker():
+    expected = {
+        "id": "btc-bitcoin",
+        "name": "Bitcoin",
+        "symbol": "BTC",
+        "quotes": {"USD": {"price": 28000}},
+    }
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/tickers/btc-bitcoin?quotes=USD",
+            status_code=200,
+            json=expected,
+        )
+        result = client.ticker(coin_id="btc-bitcoin", quotes="USD")
+
+    assert result == expected
+
+
+def test_api_platforms():
+    expected = ["btc-bitcoin", "eth-ethereum", "sol-solana"]
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/contracts",
+            status_code=200,
+            json=expected,
+        )
+        result = client.platforms()
+
+    assert result == expected
+
+
+def test_api_contracts():
+    expected = [
+        {
+            "address": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+            "type": "ERC20",
+            "id": "usdt-tether",
+            "active": True,
+        },
+    ]
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/contracts/eth-ethereum",
+            status_code=200,
+            json=expected,
+        )
+        result = client.contracts(platform_id="eth-ethereum")
+
+    assert result == expected
+
+
+def test_api_ticker_by_contract():
+    expected = {
+        "id": "usdt-tether",
+        "name": "Tether",
+        "symbol": "USDT",
+        "quotes": {"USD": {"price": 1.0}},
+    }
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/contracts/eth-ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7",
+            status_code=200,
+            json=expected,
+        )
+        result = client.ticker_by_contract(
+            platform_id="eth-ethereum",
+            contract_address="0xdac17f958d2ee523a2206206994597c13d831ec7",
+        )
+
+    assert result == expected
+
+
+def test_api_historical_by_contract():
+    expected = [
+        {"timestamp": "2024-01-01T00:00:00Z", "price": 1.0, "volume_24h": 50000000000},
+    ]
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/contracts/eth-ethereum/0xdac17f958d2ee523a2206206994597c13d831ec7/historical?start=2024-01-01",
+            status_code=200,
+            json=expected,
+        )
+        result = client.historical_by_contract(
+            platform_id="eth-ethereum",
+            contract_address="0xdac17f958d2ee523a2206206994597c13d831ec7",
+            start="2024-01-01",
+        )
+
+    assert result == expected
+
+
+def test_api_coin_mappings():
+    expected = [
+        {"id": "btc-bitcoin", "coingecko": "bitcoin", "coinmarketcap": 1},
+    ]
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/coins/mappings",
+            status_code=200,
+            json=expected,
+        )
+        result = client.coin_mappings()
+
+    assert result == expected
+
+
+def test_api_key_info():
+    expected = {"plan": "free", "usage": {"current_month": {"requests": 500}}}
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/key/info",
+            status_code=200,
+            json=expected,
+        )
+        result = client.key_info()
+
+    assert result == expected
+
+
+def test_api_changelog_ids():
+    expected = ["btc-bitcoin", "eth-ethereum"]
+    with requests_mock.mock() as m:
+        m.get(
+            "https://api.coinpaprika.com/v1/changelog/ids",
+            status_code=200,
+            json=expected,
+        )
+        result = client.changelog_ids()
+
+    assert result == expected

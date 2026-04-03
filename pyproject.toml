@@ -7,13 +7,13 @@ build-backend="setuptools.build_meta"
 
 [project]
 name = "coinpaprika-sdk"
-version = "1.0.0"
+version = "1.1.0"
 authors = [
   { name="coinpaprika", email="it@coinpaprika.com" },
 ]
 description = "Official coinpaprika API Python client"
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.9"
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: Apache Software License",
