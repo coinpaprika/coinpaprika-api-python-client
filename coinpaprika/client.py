@@ -1,3 +1,6 @@
+import re
+from urllib.parse import quote, unquote, urlsplit
+
 import requests
 
 from coinpaprika.exceptions import (
@@ -10,6 +13,30 @@ from coinpaprika.exceptions import (
     CoinpaprikaAPITooManyRequestsException,
     CoinpaprikaRequestException,
 )
+
+# Matches a path separator, '\', '?', '#', '%' or whitespace/control characters
+# once the candidate id has been percent-decoded a single time.
+_UNSAFE_SEGMENT_CHARS = re.compile(r"[/\\?#%\s\x00-\x1f]")
+
+
+def _seg(value):
+    """Validate and quote a caller-supplied id as exactly one URL path segment.
+
+    Rejects empty ids, '.' / '..', and ids that decode (one percent-decode
+    pass) to a separator, '?', '#', '%', whitespace or a control character, so
+    a value like '../key/info' or 'x#y' can never add, remove or replace path
+    segments.
+    """
+    s = str(value)
+    if s == "":
+        raise ValueError("id must not be empty")
+    try:
+        decoded = unquote(s)
+    except Exception:
+        raise ValueError("invalid id")
+    if decoded in (".", "..") or _UNSAFE_SEGMENT_CHARS.search(decoded):
+        raise ValueError("invalid id")
+    return quote(s, safe="")
 
 
 class Client(object):
@@ -49,7 +76,17 @@ class Client(object):
         return self._handle_response(response)
 
     def _create_api_uri(self, path):
-        return "{}/{}".format(self._base_url, path)
+        uri = "{}/{}".format(self._base_url, path)
+        self._assert_path_integrity(path, uri)
+        return uri
+
+    def _assert_path_integrity(self, path, uri):
+        """Defence in depth for _seg(): confirm that joining the base URL and
+        path did not change which path the final URI resolves to."""
+        expected_path = urlsplit(self._base_url).path + "/" + path
+        actual_path = urlsplit(uri).path
+        if actual_path != expected_path:
+            raise ValueError("invalid request path")
 
     def _request_api(self, method, path, **kwargs):
         uri = self._create_api_uri(path)
@@ -87,60 +124,60 @@ class Client(object):
         return self._get("coins")
 
     def coin(self, coin_id):
-        return self._get("coins/{}".format(coin_id))
+        return self._get("coins/{}".format(_seg(coin_id)))
 
     def twitter(self, coin_id):
-        return self._get("coins/{}/twitter".format(coin_id))
+        return self._get("coins/{}/twitter".format(_seg(coin_id)))
 
     def events(self, coin_id):
-        return self._get("coins/{}/events".format(coin_id))
+        return self._get("coins/{}/events".format(_seg(coin_id)))
 
     def exchanges(self, coin_id):
-        return self._get("coins/{}/exchanges".format(coin_id))
+        return self._get("coins/{}/exchanges".format(_seg(coin_id)))
 
     def markets(self, coin_id, **params):
-        return self._get("coins/{}/markets".format(coin_id), data=params)
+        return self._get("coins/{}/markets".format(_seg(coin_id)), data=params)
 
     def candle(self, coin_id, **params):
-        return self._get("coins/{}/ohlcv/latest".format(coin_id), data=params)
+        return self._get("coins/{}/ohlcv/latest".format(_seg(coin_id)), data=params)
 
     # Deprecated use ohlcv instead
     def candles(self, coin_id, **params):
-        return self._get("coins/{}/ohlcv/historical".format(coin_id), data=params)
+        return self._get("coins/{}/ohlcv/historical".format(_seg(coin_id)), data=params)
 
     def ohlcv(self, coin_id, **params):
-        return self._get("coins/{}/ohlcv/historical".format(coin_id), data=params)
+        return self._get("coins/{}/ohlcv/historical".format(_seg(coin_id)), data=params)
 
     # Deprecated use ohlcv instead
     def today(self, coin_id, **params):
-        return self._get("coins/{}/ohlcv/today".format(coin_id), data=params)
+        return self._get("coins/{}/ohlcv/today".format(_seg(coin_id)), data=params)
 
     def people(self, person_id):
-        return self._get("people/{}".format(person_id))
+        return self._get("people/{}".format(_seg(person_id)))
 
     def tags(self, **params):
         return self._get("tags", data=params)
 
     def tag(self, tag_id, **params):
-        return self._get("tags/{}".format(tag_id), data=params)
+        return self._get("tags/{}".format(_seg(tag_id)), data=params)
 
     def tickers(self, **params):
         return self._get("tickers", data=params)
 
     def ticker(self, coin_id, **params):
-        return self._get("tickers/{}".format(coin_id), data=params)
+        return self._get("tickers/{}".format(_seg(coin_id)), data=params)
 
     def historical(self, coin_id, **params):
-        return self._get("tickers/{}/historical".format(coin_id), data=params)
+        return self._get("tickers/{}/historical".format(_seg(coin_id)), data=params)
 
     def exchange_list(self, **params):
         return self._get("exchanges", data=params)
 
     def exchange(self, exchange_id, **params):
-        return self._get("exchanges/{}".format(exchange_id), data=params)
+        return self._get("exchanges/{}".format(_seg(exchange_id)), data=params)
 
     def exchange_markets(self, exchange_id, **params):
-        return self._get("exchanges/{}/markets".format(exchange_id), data=params)
+        return self._get("exchanges/{}/markets".format(_seg(exchange_id)), data=params)
 
     def search(self, **params):
         return self._get("search", data=params)
@@ -158,16 +195,20 @@ class Client(object):
 
     def contracts(self, platform_id):
         """Get all contracts/tokens on a given platform."""
-        return self._get("contracts/{}".format(platform_id))
+        return self._get("contracts/{}".format(_seg(platform_id)))
 
     def ticker_by_contract(self, platform_id, contract_address):
         """Get ticker data for a token by its contract address on a given platform."""
-        return self._get("contracts/{}/{}".format(platform_id, contract_address))
+        return self._get(
+            "contracts/{}/{}".format(_seg(platform_id), _seg(contract_address))
+        )
 
     def historical_by_contract(self, platform_id, contract_address, **params):
         """Get historical ticker data for a token by contract address."""
         return self._get(
-            "contracts/{}/{}/historical".format(platform_id, contract_address),
+            "contracts/{}/{}/historical".format(
+                _seg(platform_id), _seg(contract_address)
+            ),
             data=params,
         )
 
